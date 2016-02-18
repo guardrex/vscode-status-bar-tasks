@@ -22,12 +22,8 @@ export function activate(context: vscode.ExtensionContext) {
                 let disposableCommand = vscode.commands.registerCommand('extension.run' + i, () => {
                     outputChannel.showOutput();
                     let ls = exec(val['args'].join(' '), {cwd: vscode.workspace.rootPath});
-                    ls.stdout.on('data', function (data) {
-                        outputChannel.attachOutput(data);
-                    });
-                    ls.stderr.on('data', function (data) {
-                        outputChannel.attachOutput(data);
-                    });
+                    ls.stdout.on('data', data => outputChannel.attachOutput(data));
+                    ls.stderr.on('data', data => outputChannel.attachOutput(data));
                 });
                 context.subscriptions.push(disposableCommand);
                 context.subscriptions.push(statusBarTask);
