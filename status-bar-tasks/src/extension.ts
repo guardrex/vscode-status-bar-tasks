@@ -10,13 +10,13 @@ export function activate(context: vscode.ExtensionContext) {
     var disposableCommand;
     var outputChannel;
     if (vscode.workspace && vscode.workspace.rootPath) {
-        let taskList = getTasksArray();
+        const taskList = getTasksArray();
         if (!taskList) {
             vscode.window.showInformationMessage('Status Bar Tasks: There are no tasks to load.');
         } else {
-            let outputChannel = new OutputChannel;
+            const outputChannel = new OutputChannel;
             outputChannel.addOutputChannel('Project Task');
-            taskList.forEach(function (val, i) { 
+            taskList.forEach((val: Object, i: number) => { 
                 let statusBarTask = new StatusBarTask();
                 statusBarTask.addStatusBartask(val['taskName'], i);
                 let disposableCommand = vscode.commands.registerCommand('extension.run' + i, () => {
@@ -41,9 +41,9 @@ export function deactivate() {
 }
 
 function getTasksArray() : Array<Object> {
-    let tasksFilePath = path.join(vscode.workspace.rootPath, '.vscode', 'tasks.json');
     try {
-        let taskFileTasks = JSON.parse(fs.readFileSync(tasksFilePath, 'utf8'));
+        const taskFilePath = path.join(vscode.workspace.rootPath, '.vscode', 'tasks.json');
+        const taskFileTasks = JSON.parse(fs.readFileSync(taskFilePath, 'utf8'));
         if (taskFileTasks) {
             let taskElement = taskFileTasks['tasks'];
             return taskElement;
