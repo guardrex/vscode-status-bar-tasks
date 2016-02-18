@@ -1,6 +1,8 @@
 # vscode-status-bar-tasks
 This extension loads your VS Code tasks into executable status bar commands.
 
+![VS Code UI with status bar commands and task execution](/status-bar-tasks.png?raw=true "VS Code UI Example")
+
 ## WARNING!
 This extension is at the **PROTOTYPE** stage! Use at your own risk.
 
