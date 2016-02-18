@@ -2,7 +2,7 @@
 This extension loads your VS Code tasks into executable status bar commands.
 
 ## WARNING!
-This extension is at the **PROTOTYPE** stage! Be careful using in a production environment without serious testing. Use at your own risk.
+This extension is at the **PROTOTYPE** stage! Use at your own risk.
 
 ### Requirements
 - VS Code
@@ -16,6 +16,8 @@ The extension runs once automatically each time you open a new project folder. I
 
 ### `tasks.json` File Setup
 Here is an example `tasks.json` file that contains a number of Gulp and `dotnet cli` commands. The commands will appear in the status bar in the order that they are read from the file.
+
+Note that the `taskName` is only used as the name (due to the presence of `"suppressTaskName": true`), while the `args` contains the command and arguments to be executed.
 
 ```json
 {
@@ -37,7 +39,7 @@ Here is an example `tasks.json` file that contains a number of Gulp and `dotnet 
         {
             "taskName": "publish debug",
             "suppressTaskName": true,
-            "args" : ["dotnet", "publish"],
+            "args" : ["dotnet", "publish", "--configuration", "Debug"],
             "showOutput": "always",
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"
@@ -56,31 +58,10 @@ Here is an example `tasks.json` file that contains a number of Gulp and `dotnet 
             "args" : ["gulp", "processCSS"]
         },
         {
-            "taskName": "processindexcss",
-            "suppressTaskName": true,
-            "args" : ["gulp", "processIndexCSS"]
-        },
-        {
             "taskName": "processsjs",
             "suppressTaskName": true,
             "args" : ["gulp", "processJS"],
             "problemMatcher": "$jshint"
-        },
-        {
-            "taskName": "processindexjs",
-            "suppressTaskName": true,
-            "args" : ["gulp", "processIndexJS"],
-            "problemMatcher": "$jshint"
-        },
-        {
-            "taskName": "processfonts",
-            "suppressTaskName": true,
-            "args" : ["gulp", "processFonts"]
-        },
-        {
-            "taskName": "processviewswwwroot",
-            "suppressTaskName": true,
-            "args" : ["gulp", "processViewsWwwroot"]
         },
         {
             "taskName": "watch",
@@ -95,7 +76,7 @@ Here is an example `tasks.json` file that contains a number of Gulp and `dotnet 
             "showOutput": "always"
         },
         {
-            "taskName": "get version",
+            "taskName": "dotnet version",
             "suppressTaskName": true,
             "args" : ["dotnet", "--version"],
             "showOutput": "always"
