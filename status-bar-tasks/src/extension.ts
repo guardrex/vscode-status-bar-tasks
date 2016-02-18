@@ -1,14 +1,11 @@
 'use strict';
 import * as vscode from 'vscode';
-import path = require('path');
-import fs = require('fs');
+const path = require('path');
+const fs = require('fs');
 const exec = require('child_process').exec;
 
 export function activate(context: vscode.ExtensionContext) {
-    var taskList;
-    var statusBarTask;
-    var disposableCommand;
-    var outputChannel;
+    var statusBarTask, disposableCommand;
     if (vscode.workspace && vscode.workspace.rootPath) {
         const taskList = getTasksArray();
         if (!taskList) {
@@ -28,9 +25,9 @@ export function activate(context: vscode.ExtensionContext) {
                 context.subscriptions.push(disposableCommand);
                 context.subscriptions.push(statusBarTask);
             });
+            context.subscriptions.push(outputChannel);
         }
     }
-    context.subscriptions.push(outputChannel);
 }
 
 export function deactivate() {
