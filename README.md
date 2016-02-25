@@ -32,17 +32,25 @@ Note that the `taskName` is only used as the name (due to the presence of `"supp
             "problemMatcher": "$msCompile"
         },
         {
-            "taskName": "publish debug",
+            "taskName": "publish debug 2012R2",
             "suppressTaskName": true,
-            "args" : ["dotnet", "publish", "--configuration", "Debug"],
+            "args" : ["dotnet", "publish", "--configuration", "Debug", "--runtime", "win8-x64"],
             "showOutput": "always",
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"
         },
         {
-            "taskName": "publish release",
+            "taskName": "publish release 2012R2",
             "suppressTaskName": true,
-            "args" : ["dotnet", "publish", "--configuration", "Release"],
+            "args" : ["dotnet", "publish", "--configuration", "Release", "--runtime", "win8-x64"],
+            "showOutput": "always",
+            "isBuildCommand": true,
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "taskName": "publish release Nano",
+            "suppressTaskName": true,
+            "args" : ["dotnet", "publish", "--configuration", "Release", "--runtime", "win10-x64"],
             "showOutput": "always",
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"
@@ -79,5 +87,12 @@ Note that the `taskName` is only used as the name (due to the presence of `"supp
     ]
 }
 ```
-
-
+### Version History
+Version | Changes Made
+------- | ------------
+0.0.1   | Initial Release
+0.0.2   | Increased the `OutputChannel` maximum buffer from 200K to 2MB to cover commands with massive output (e.g., `dotnet restore`)
+        | Added `child_process` module `err` output to `OutputChannel`
+0.0.3   | Reversed `err` addition due to exception with published extension.
+0.0.4   | Updated README.md to show multiple `dotnet publish` runtime options
+0.0.5   | Added a plugin to strip JSON comments from the file before parsing to avoid exception if comments are present
