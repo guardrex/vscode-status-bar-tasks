@@ -3,7 +3,6 @@ import * as vscode from 'vscode';
 const path = require('path');
 const fs = require('fs');
 const exec = require('child_process').exec;
-const stripJsonComments = require('strip-json-comments');
 
 export function activate(context: vscode.ExtensionContext) {
     var statusBarTask, disposableCommand;
@@ -37,7 +36,9 @@ export function deactivate() {
 function getTasksArray() : Array<Object> {
     try {
         const taskFilePath = path.join(vscode.workspace.rootPath, '.vscode', 'tasks.json');
-        const taskFileTasks = JSON.parse(stripJsonComments(fs.readFileSync(taskFilePath, 'utf8')));
+        const rawTaskFileContents = fs.readFileSync(taskFilePath, 'utf8');
+        var taskFileContents = rawTaskFileContents.replace(/((\/\/|\/\/\/)(.*)(\r\n|\r|\n))|((\/\*)((\D|\d)+)(\*\/))/gi, "");
+        const taskFileTasks = JSON.parse(taskFileContents);
         if (taskFileTasks) {
             let taskElement = taskFileTasks['tasks'];
             return taskElement;

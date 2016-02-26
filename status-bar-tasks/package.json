@@ -2,7 +2,7 @@
   "name": "status-bar-tasks",
   "displayName": "Status Bar Tasks",
   "description": "Load your VS Code Tasks into executable Status Bar commands.",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "GuardRex",
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
     "Other"
   ],
   "engines": {
-    "vscode": "^0.10.6"
+    "vscode": "^0.10.5"
   },
   "activationEvents": [
     "*"

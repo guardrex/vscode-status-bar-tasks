@@ -96,3 +96,4 @@ Version | Changes Made
 0.0.3   | Reversed `err` addition due to exception with published extension.
 0.0.4   | Updated README.md to show multiple `dotnet publish` runtime options
 0.0.5   | Added a plugin to strip JSON comments from the file before parsing to avoid exception if comments are present
+0.0.6   | React to suggestion for regex modification for comment removal
