@@ -91,9 +91,10 @@ Note that the `taskName` is only used as the name (due to the presence of `"supp
 Version | Changes Made
 ------- | ------------
 0.0.1   | Initial Release
-0.0.2   | Increased the `OutputChannel` maximum buffer from 200K to 2MB to cover commands with massive output (e.g., `dotnet restore`)
-        | Added `child_process` module `err` output to `OutputChannel`
+0.0.2   | Increased the `OutputChannel` maximum buffer from 200K to 2MB to cover commands with massive output (e.g., `dotnet restore`).
+        | Added `child_process` module `err` output to `OutputChannel`.
 0.0.3   | Reversed `err` addition due to exception with published extension.
-0.0.4   | Updated README.md to show multiple `dotnet publish` runtime options
-0.0.5   | Added a plugin to strip JSON comments from the file before parsing to avoid exception if comments are present
-0.0.6   | React to suggestion for regex modification for comment removal
+0.0.4   | Updated README.md to show multiple `dotnet publish` runtime options.
+0.0.5   | Added a plugin to strip JSON comments from the file before parsing to avoid exception if comments are present.
+0.0.6   | Reacted to suggestion for regex modification for comment removal.
+0.0.7   | Changed the Output Channel from 'Project Task' to 'Tasks' so that command output appears in the existing 'Tasks' panel.

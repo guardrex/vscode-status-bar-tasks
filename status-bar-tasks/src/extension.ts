@@ -12,7 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.window.showInformationMessage('Status Bar Tasks: There are no tasks to load.');
         } else {
             const outputChannel = new OutputChannel;
-            outputChannel.addOutputChannel('Project Task');
+            outputChannel.addOutputChannel('Tasks');
             taskList.forEach((val: Object, i: number) => { 
                 let statusBarTask = new StatusBarTask();
                 statusBarTask.addStatusBartask(val['taskName'], i);
