@@ -1,7 +1,0 @@
-To publish (produces a .vsix):
-
-vsce publish
-
-Upload at:
-
-https://marketplace.visualstudio.com/manage/

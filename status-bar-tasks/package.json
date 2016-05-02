@@ -2,7 +2,7 @@
   "name": "status-bar-tasks",
   "displayName": "Status Bar Tasks",
   "description": "Load your VS Code Tasks into executable Status Bar commands.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "GuardRex",
   "repository": {
     "type": "git",
@@ -37,6 +37,7 @@
   "devDependencies": {
     "strip-json-comments": "^2.0.1",
     "typescript": "^1.7.5",
-    "vscode": "^0.11.0"
+    "vsce": "^1.4.0",
+    "vscode": "^1.0.0"
   }
 }

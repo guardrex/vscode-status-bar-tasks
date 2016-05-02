@@ -12,6 +12,14 @@ The extension runs once automatically each time you open a new project folder. I
 ### `tasks.json` File Setup
 Here is an example `tasks.json` file that contains a number of Gulp and `dotnet cli` commands. The commands will appear in the status bar in the order that they are read from the file.
 
+You may use the following strings in your arguments and they will be replaced with the appropriate values.
+- ${workspaceRoot} the path of the folder opened in VS Code
+- ${file} the current opened file
+- ${fileBasename} the current opened file's basename
+- ${fileDirname} the current opened file's directory
+- ${fileExtname} the current opened file's extension
+- ${env.<ENVIRONMENT_VARIABLE_NAME>} environment variable (e.g., ${env.MY_ENV_VAR} will be replaced by the value of MY_ENV_VAR on the system or an empty string if the environment variable is not set).
+
 Note that the `taskName` is only used as the name (due to the presence of `"suppressTaskName": true`), while the `args` contains the command and arguments to be executed.
 
 ```json
@@ -98,3 +106,4 @@ Version | Changes Made
 0.0.5   | Added a plugin to strip JSON comments from the file before parsing to avoid exception if comments are present.
 0.0.6   | Reacted to suggestion for regex modification for comment removal.
 0.0.7   | Changed the Output Channel from 'Project Task' to 'Tasks' so that command output appears in the existing 'Tasks' panel.
+0.0.8   | Added string replacements in arguments for ${workspaceRoot}, ${file}, ${fileBasename}, ${fileDirname}, ${fileExtname}, and ${env.<ENVIRONMENT_VARIABLE_NAME>}.
