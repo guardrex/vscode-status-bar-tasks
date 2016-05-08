@@ -7,7 +7,7 @@ This extension loads your VS Code tasks into executable status bar commands.
 The extension can be installed via the VS Code Marketplace. If you want to install it manually directly from this repo, take the entire `status-bar-tasks` folder and place it into your user profile `.vscode/extensions` folder. This will make it available to any project you open in VS Code.
 
 ### Operation
-The extension runs once automatically each time you open a new project folder. If the project has a `.vscode/tasks.json` file, it will load the tasks automatically from that file. If you change the `tasks.json` file, either close the project and re-open it or close VS Code and re-run it for the extension to pickup the changes.
+The extension runs once automatically each time you open a new project folder. If the project has a `.vscode/tasks.json` file, it will load the tasks automatically from that file. If you change the `tasks.json` file, your status bar tasks will update immediately.
 
 ### `tasks.json` File Setup
 Here is an example `tasks.json` file that contains a number of Gulp and `dotnet cli` commands. The commands will appear in the status bar in the order that they are read from the file.
@@ -107,3 +107,5 @@ Version | Changes Made
 0.0.6   | Reacted to suggestion for regex modification for comment removal.
 0.0.7   | Changed the Output Channel from 'Project Task' to 'Tasks' so that command output appears in the existing 'Tasks' panel.
 0.0.8   | Added string replacements in arguments for ${workspaceRoot}, ${file}, ${fileBasename}, ${fileDirname}, ${fileExtname}, and ${env.<ENVIRONMENT_VARIABLE_NAME>}.
+0.0.9   | Added auto-update of the status bar tasks when the `tasks.json` file is saved.
+0.1.0   | Reversed change made in 0.0.7, because there is no way to get a reference to the existing Tasks `OutputChannel` through the VS Code API. Reverted back to using a new `OutputChannel` but changed the name and will use `Status Bar Tasks`. Fixed a counting bug in the code that handles populating the status bar tasks on save of the `tasks.json` file.
