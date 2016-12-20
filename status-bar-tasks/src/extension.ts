@@ -35,58 +35,85 @@ function LoadTasks(context: vscode.ExtensionContext, tasksOutputChannel: OutputC
         });
         tasksOutputChannel.attachOutput('cmdCounter: ' + cmdCounter + ' Loading tasks now.\n');
     });
-    */          
+    */
+
     var statusBarTask, disposableCommand;
     const taskList = getTasksArray();
     var taskCounter = 0;
+    var delimiter = process.platform == 'win32' ? '\\' : '/';
     if (taskList) {
         taskList.forEach((val: Object, i: number) => { 
             let statusBarTask = new StatusBarTask();
-            statusBarTask.addStatusBartask(val['taskName'], (i + cmdCounter));
-            let disposableCommand = vscode.commands.registerCommand('extension.run' + (i + cmdCounter), () => {
-                tasksOutputChannel.showOutput();
-                let cmd = val['args'].join(' ');
-                let currentTextEditors = vscode.window.activeTextEditor;
-                let currentFilepath = "", currentFileBasename = "", currentFileDirname = "", currentFileExtname = "";
-                if (currentTextEditors != undefined) {
-                    let currentFile = currentTextEditors.document.fileName;
-                    let currentFilenameSplit;
-                    currentFilepath = currentFile;
-                    if (currentFile.indexOf('\\') != -1) {
-                        let currentFilepathSplit = currentFile.split('\\');
-                        let currentFilename = currentFilepathSplit.pop();
-                        currentFilenameSplit = currentFilename.split('.')
-                        currentFileDirname = currentFilepathSplit.join('\\');
-                    } else {
-                        let currentFilepathSplit = currentFile.split('\/');
-                        let currentFilename = currentFilepathSplit.pop();
-                        currentFilenameSplit = currentFilename.split('.')
-                        currentFileDirname = currentFilepathSplit.join('/');
+            if (val['showInStatusBar'] == null || val['showInStatusBar'] == true)
+            {
+                statusBarTask.addStatusBartask(val['taskName'], (i + cmdCounter));
+                let disposableCommand = vscode.commands.registerCommand('extension.run' + (i + cmdCounter), () => {
+                    tasksOutputChannel.showOutput();
+                    let cmd = val['args'].join(' ');
+                    let currentTextEditors = vscode.window.activeTextEditor;
+                    let sbt_workspaceRoot = '', sbt_workspaceRootFolderName = '', sbt_file = '', sbt_relativeFile = '', sbt_fileDirname = '', sbt_fileBasename = '', sbt_fileBasenameNoExtension = '', sbt_fileExtname;
+
+                    if (currentTextEditors != undefined) {
+                        try
+                        {
+                            // path to the current application
+                            sbt_workspaceRoot = vscode.workspace.rootPath;
+
+                            // folder name holding the application
+                            sbt_workspaceRootFolderName = sbt_workspaceRoot.substring(sbt_workspaceRoot.lastIndexOf(delimiter)+1);
+
+                            // full filepath to open file
+                            sbt_file = vscode.window.activeTextEditor.document.fileName;
+
+                            // folder/file relative to the workspace root
+                            sbt_relativeFile = sbt_file.substring(sbt_workspaceRoot.length+1);
+
+                            let currentFilepathSplit = sbt_file.split(delimiter);
+
+                            // filename
+                            sbt_fileBasename = currentFilepathSplit.pop();
+
+                            // path to the open file
+                            sbt_fileDirname = currentFilepathSplit.join(delimiter);
+
+                            // file extension 
+                            let sbt_fileExtnameArray = sbt_fileBasename.match('(\\.[^.]+)$');
+                            sbt_fileExtname = sbt_fileExtnameArray != null ? sbt_fileExtnameArray[0] : '';
+
+                            // filename without extension
+                            sbt_fileBasenameNoExtension = sbt_fileBasename.substring(0, sbt_fileBasename.length - sbt_fileExtname.length);
+                        }
+                        catch (e)
+                        {
+                            tasksOutputChannel.attachOutput('Exception during string variable replacements: ' + e);
+                        }
                     }
-                    currentFileExtname = currentFilenameSplit.pop();
-                    currentFileBasename = currentFilenameSplit;
-                }
-                cmd = cmd.replace(/(\$\{env\.)\w+(\})/gi, function(matched){
-                    let envVar = matched.substring(matched.indexOf('.')+1, matched.indexOf('}'));
-                    if (process.env[envVar] != undefined) {
-                        return process.env[envVar];
-                    } else {
-                        return "";
-                    }
+                    cmd = cmd.replace(/(\$\{env\.)\w+(\})/gi, function(matched){
+                        let envVar = matched.substring(matched.indexOf('.')+1, matched.indexOf('}'));
+                        if (process.env[envVar] != undefined) {
+                            return process.env[envVar];
+                        } else {
+                            return "";
+                        }
+                    });
+
+                    cmd = cmd.replace(/\$\{file\}/gi, sbt_file)
+                        .replace(/\$\{fileBasename\}/gi, sbt_fileBasename)
+                        .replace(/\$\{relativeFile\}/gi, sbt_relativeFile)
+                        .replace(/\$\{fileDirname\}/gi, sbt_fileDirname)
+                        .replace(/\$\{fileExtname\}/gi, sbt_fileExtname)
+                        .replace(/\$\{workspaceRoot\}/gi, sbt_workspaceRoot)
+                        .replace(/\$\{fileBasenameNoExtension\}/gi, sbt_fileBasenameNoExtension)
+                        .replace(/\$\{workspaceRootFolderName\}/gi, sbt_workspaceRootFolderName);
+
+                    let ls = exec(cmd, {cwd: vscode.workspace.rootPath, maxBuffer: 2048000});
+                    ls.stdout.on('data', data => tasksOutputChannel.attachOutput(data));
+                    ls.stderr.on('data', data => tasksOutputChannel.attachOutput(data));
                 });
-                cmd = cmd.replace('${file}', currentFilepath)
-                    .replace('${fileBasename}', currentFileBasename)
-                    .replace('${fileDirname}', currentFileDirname)
-                    .replace('${fileExtname}', currentFileExtname)
-                    .replace('${workspaceRoot}', vscode.workspace.rootPath);
-                let ls = exec(cmd, {cwd: vscode.workspace.rootPath, maxBuffer: 2048000});
-                ls.stdout.on('data', data => tasksOutputChannel.attachOutput(data));
-                ls.stderr.on('data', data => tasksOutputChannel.attachOutput(data));
-            });
+            }
             context.subscriptions.push(disposableCommand);
             context.subscriptions.push(statusBarTask);
             taskCounter += 1;
-            
         });
         cmdCounter += taskCounter;
     }
