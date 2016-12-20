@@ -40,7 +40,7 @@ Here is a task that you can use with Status Bar Tasks to show all of the variabl
 
 Note that the `taskName` is only used as the name (due to the presence of `"suppressTaskName": true`), while the `args` contains the command and arguments to be executed.
 
-Note that the schama for the `tasks.json` file is hard-coded into VS Code. Therefore, if you do add `"showInStatusBar": false` to any of the tasks in order to prevent them from being shown in the Status Bar, you will get a warning that the property isn't allowed. This warning should be harmless and not affect VS Code's operation. It will just show up in the UI as a green squiggle under the property. I'm monitoring an issue I opened to hear back from VS Code devs on how to deal with this situation: https://github.com/Microsoft/vscode/issues/17566
+Note that the schema for the `tasks.json` file is hard-coded into VS Code. Therefore, if you do add `"showInStatusBar": false` to any of the tasks in order to prevent them from being shown in the Status Bar, you will get a warning that the property isn't allowed. This warning should be harmless and not affect VS Code's operation. It will just show up in the UI as a green squiggle under the property. I'm monitoring an issue I opened to hear back from VS Code devs on how to deal with this situation: https://github.com/Microsoft/vscode/issues/17566
 
 ```json
 {
