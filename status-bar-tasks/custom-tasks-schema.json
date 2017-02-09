@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "showInStatusBar": {
+            "type": "boolean",
+            "description": "Whether this task shows up in the Status Bar.",
+            "default": true
+          }
+        }
+      }
+    }
+  }
+}

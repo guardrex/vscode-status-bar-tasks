@@ -2,7 +2,7 @@
   "name": "status-bar-tasks",
   "displayName": "Status Bar Tasks",
   "description": "Load your VS Code Tasks into executable Status Bar commands.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "GuardRex",
   "repository": {
     "type": "git",
@@ -20,24 +20,31 @@
     "Other"
   ],
   "engines": {
-    "vscode": "^0.10.5"
+    "vscode": "^1.9.0"
   },
   "activationEvents": [
     "*"
   ],
   "main": "./out/src/extension",
   "contributes": {
-    "commands": []
+    "commands": [],
+    "jsonValidation": [
+      {
+        "fileMatch": "/.vscode/tasks.json",
+        "url": "./custom-tasks-schema.json"
+      }
+    ]
   },
   "scripts": {
-    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
-    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "devDependencies": {
     "strip-json-comments": "^2.0.1",
-    "typescript": "^1.7.5",
-    "vsce": "^1.4.0",
-    "vscode": "^1.0.0"
+    "typescript": "^2.0.3",
+    "vscode": "^1.0.3",
+    "@types/node": "^7.0.5",
+    "@types/mocha": "^2.2.39"
   }
 }

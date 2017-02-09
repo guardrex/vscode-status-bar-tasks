@@ -5,6 +5,7 @@ const fs = require('fs');
 const exec = require('child_process').exec;
 var cmdCounter = 0;
 var statusBarItems: Array<vscode.StatusBarItem> = [];
+var globalCommandArguments = "";
 
 export function activate(context: vscode.ExtensionContext) {
     if (vscode.workspace && vscode.workspace.rootPath) {
@@ -41,15 +42,31 @@ function LoadTasks(context: vscode.ExtensionContext, tasksOutputChannel: OutputC
     const taskList = getTasksArray();
     var taskCounter = 0;
     var delimiter = process.platform == 'win32' ? '\\' : '/';
+    var cmd = "";
     if (taskList) {
         taskList.forEach((val: Object, i: number) => { 
             let statusBarTask = new StatusBarTask();
-            if (val['showInStatusBar'] == null || val['showInStatusBar'] == true)
+            if (val['showInStatusBar'] == undefined || val['showInStatusBar'] == true)
             {
                 statusBarTask.addStatusBartask(val['taskName'], (i + cmdCounter));
                 let disposableCommand = vscode.commands.registerCommand('extension.run' + (i + cmdCounter), () => {
                     tasksOutputChannel.showOutput();
-                    let cmd = val['args'].join(' ');
+                    if (val['command'] != undefined)
+                    {
+                        if (val['args'] != undefined)
+                        {
+                            cmd = val['command'] + ' ' + val['args'].join(' ');
+                        } else {
+                            cmd = val['command'];
+                        }
+                    } else {
+                        if (val['args'] != undefined)
+                        {
+                            cmd = globalCommandArguments + ' ' + val['args'].join(' ');
+                        } else {
+                            cmd = globalCommandArguments;
+                        }
+                    }
                     let currentTextEditors = vscode.window.activeTextEditor;
                     let sbt_workspaceRoot = '', sbt_workspaceRootFolderName = '', sbt_file = '', sbt_relativeFile = '', sbt_fileDirname = '', sbt_fileBasename = '', sbt_fileBasenameNoExtension = '', sbt_fileExtname;
 
@@ -141,6 +158,14 @@ function getTasksArray() : Array<Object> {
         var taskFileContents = rawTaskFileContents.replace(/((\/\/|\/\/\/)(.*)(\r\n|\r|\n))|((\/\*)((\D|\d)+)(\*\/))/gi, "");
         const taskFileTasks = JSON.parse(taskFileContents);
         if (taskFileTasks) {
+            if (taskFileTasks['command'] != undefined)
+            {
+                globalCommandArguments = taskFileTasks['command']
+            }
+            if (taskFileTasks['args'] != undefined)
+            {
+                globalCommandArguments += ' ' + taskFileTasks['args'].join(' ');
+            }
             let taskElement = taskFileTasks['tasks'];
             /*
             if (taskFileTasks.command) {
