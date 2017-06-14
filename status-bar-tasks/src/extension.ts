@@ -70,15 +70,15 @@ function LoadTasks(context: vscode.ExtensionContext, tasksOutputChannel: OutputC
                     let currentTextEditors = vscode.window.activeTextEditor;
                     let sbt_workspaceRoot = '', sbt_workspaceRootFolderName = '', sbt_file = '', sbt_relativeFile = '', sbt_fileDirname = '', sbt_fileBasename = '', sbt_fileBasenameNoExtension = '', sbt_fileExtname;
 
+                    // path to the current application
+                    sbt_workspaceRoot = vscode.workspace.rootPath;
+
+                    // folder name holding the application
+                    sbt_workspaceRootFolderName = sbt_workspaceRoot.substring(sbt_workspaceRoot.lastIndexOf(delimiter)+1);
+
                     if (currentTextEditors != undefined) {
                         try
                         {
-                            // path to the current application
-                            sbt_workspaceRoot = vscode.workspace.rootPath;
-
-                            // folder name holding the application
-                            sbt_workspaceRootFolderName = sbt_workspaceRoot.substring(sbt_workspaceRoot.lastIndexOf(delimiter)+1);
-
                             // full filepath to open file
                             sbt_file = vscode.window.activeTextEditor.document.fileName;
 
