@@ -11,7 +11,11 @@
             "type": "boolean",
             "description": "Whether this task shows up in the Status Bar.",
             "default": true
-          }
+          },
+		      "statusBarLabel": {
+			      "type": "string",
+			      "description": "The label to use when showing this task in the Status Bar. Can include octicons in the format $(icon)."
+		      }
         }
       }
     }
