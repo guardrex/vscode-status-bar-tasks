@@ -48,7 +48,8 @@ function LoadTasks(context: vscode.ExtensionContext, tasksOutputChannel: OutputC
             let statusBarTask = new StatusBarTask();
             if (val['showInStatusBar'] == undefined || val['showInStatusBar'] == true)
             {
-                statusBarTask.addStatusBartask(val['taskName'], (i + cmdCounter));
+                let statusBarLabel = val['statusBarLabel'] || val['label'] || val['taskName'];
+                statusBarTask.addStatusBartask(statusBarLabel, (i + cmdCounter));
                 let disposableCommand = vscode.commands.registerCommand('extension.run' + (i + cmdCounter), () => {
                     tasksOutputChannel.showOutput();
                     if (val['command'] != undefined)
