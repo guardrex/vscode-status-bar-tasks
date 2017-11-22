@@ -10,7 +10,7 @@ The extension can be installed via the VS Code Marketplace. If you want to insta
 The extension runs once automatically each time you open a new project folder. If the project has a *vscode/tasks.json* file, it will load the tasks automatically from that file. If you change the *tasks.json* file, your status bar tasks will update as soon as you save the file.
 
 ### Not recommended for certain background tasks
-Once a process is spawned for a task, the extension does nothing to stop or suspend it when the application is closed or VS Code is closed. This extension works best with tasks that run to completion and exit their process when complete on their own. For example, this extension doesn't work well with `dotnet watch`, because that will leave the watch process running after the program or VS Code are closed. There is an open issue to discuss extending the extension to suspend/stop processes that don't end on their own; but as it stands, a feature such as this is beyond the scope of what I intended for this extension to do. https://github.com/GuardRex/vscode-status-bar-tasks/issues/13
+Once a process is spawned for a task, the extension does nothing to stop or suspend it when the application is closed or VS Code is closed. This extension works best with tasks that run to completion and exit their process when complete on their own. For example, this extension doesn't work well with `dotnet watch`, because that will leave the watch process running after the program or VS Code are closed.
 
 ### *tasks.json* File Setup
 Here is an example *tasks.json* file that contains a number of Gulp and `dotnet cli` commands. The commands will appear in the status bar in the order that they are read from the file.
@@ -29,16 +29,13 @@ You may use the following strings in your arguments and they will be replaced wi
 Here is a task that you can use with Status Bar Tasks to show all of the variables in action for the current open file:
 ```json
 {
-    "taskName": "test variable replacements",
-    "suppressTaskName": true,
-    "args" : ["echo", "file: ${file} fileBasename: ${fileBasename} relativeFile: ${relativeFile} fileDirname: ${fileDirname} fileExtname: ${fileExtname} workspaceRoot: ${workspaceRoot} fileBasenameNoExtension: ${fileBasenameNoExtension} workspaceRootFolderName: ${workspaceRootFolderName}"],
-    "isTestCommand": true,
-    "showOutput": "always"
+    "label": "test variable replacements",
+    "command": "echo",
+    "args" : ["file: ${file} fileBasename: ${fileBasename} relativeFile: ${relativeFile} fileDirname: ${fileDirname} fileExtname: ${fileExtname} workspaceRoot: ${workspaceRoot} fileBasenameNoExtension: ${fileBasenameNoExtension} workspaceRootFolderName: ${workspaceRootFolderName}"]
 }
-
 ```
 
-Note that the `taskName` is only used as the name (due to the presence of `"suppressTaskName": true`). As of VS Code 1.9, there is a new `command` property that you can have on each task. If you don't supply this property on a task, then the global `command` property and `args` property are used (`cmd /c` in the example below). If you do supply a task with a `command` property, the global property is *not* used and the `command` on the task along with the task's `<args>` are used to assemble the command.
+As of VS Code 1.9, there is a new `command` property that you can have on each task. If you don't supply this property on a task, then the global `command` property and `args` property are used (`cmd /c` in the example below). If you do supply a task with a `command` property, the global property is *not* used and the `command` on the task along with the task's `<args>` are used to assemble the command.
 
 For the example *tasks.json* file below, `restore example 1` yields a command execution of:
 ```
@@ -49,63 +46,58 @@ The task `restore example 2` yields a command execution of:
 cmd /c dotnet restore
 ```
 
-Note that the schema for the *tasks.json* file is hard-coded into VS Code right now. Therefore, if you do add `"showInStatusBar": false` to any of the tasks in order to prevent them from being shown in the Status Bar, you will get a warning that the property isn't allowed. This warning should be harmless and not affect VS Code's operation. It will just show up in the UI as a green squiggle under the property. I'm monitoring an open issue that should fix the problem with adding properties to the `task.json` schema. If you agree that they should offer this feature, you can go to the issue and click the :+1: on the main post to vote your support for the feature: https://github.com/Microsoft/vscode/issues/20193
+Note that the schema for the *tasks.json* file is hard-coded into VS Code right now. Therefore, if you do add `"showInStatusBar": false` to any of the tasks in order to prevent them from being shown in the Status Bar, you'll get a warning that the property isn't allowed. This warning should be harmless and not affect VS Code's operation. It'll just show up in the UI as a green squiggle under the property. I'm monitoring an open issue that should fix the problem with adding properties to the *task.json* schema. If you agree that they should offer this feature, you can go to the issue and click the :+1: on the main post to vote your support for the feature: https://github.com/Microsoft/vscode/issues/20193
 
 ```json
 {
-    "version": "0.1.0",
+    "version": "2.0.0",
     "command": "cmd",
-    "isShellCommand": true,
-    "showOutput": "silent",
     "args": [
         "/c"
     ],
     "tasks": [
         {
-            "taskName": "restore example 1",
-            "suppressTaskName": true,
-            "command": "dotnet",
-            "args" : ["restore"],
-            "showOutput": "always",
+            "type": "shell",
+            "label": "restore example 1",
+            "command": "dotnet restore"
+        },
+        {
+            "type": "shell",
+            "label": "restore example 2",
+            "args" : ["dotnet", "restore"]
+        },
+        {
+            "type": "shell",
+            "label": "build",
+            "command" : "dotnet build --configuration Debug",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": "$msCompile"
         },
         {
-            "taskName": "restore example 2",
-            "suppressTaskName": true,
-            "args" : ["dotnet", "restore"],
-            "showOutput": "always",
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "taskName": "DO NOT show this task in the Status Bar!",
-            "suppressTaskName": true,
-            "command": "dotnet",
-            "args" : ["publish", "--configuration", "Release", "--runtime", "win10-x64"],
-            "showOutput": "always",
-            "isBuildCommand": true,
+            "type": "shell",
+            "label": "DO NOT show this task in the Status Bar!",
+            "command": "dotnet publish --configuration Release --runtime win10-x64",
             "problemMatcher": "$msCompile",
             "showInStatusBar": false
         },
         {
-            "taskName": "processcss",
-            "suppressTaskName": true,
-            "command": "gulp",
-            "args" : ["processCSS"]
+            "type": "shell",
+            "label": "process css",
+            "command": "gulp processCSS"
         },
         {
-            "taskName": "unittest",
-            "suppressTaskName": true,
-            "command": "dotnet",
-            "args" : ["test"],
-            "isTestCommand": true,
-            "showOutput": "always"
+            "type": "shell",
+            "label": "test",
+            "command": "dotnet test",
+            "args" : ["test"]
         },
         {
-            "taskName": "dotnet info",
-            "suppressTaskName": true,
-            "command": "dotnet",
-            "args" : ["--info"],
-            "showOutput": "always"
+            "type": "shell",
+            "label": "dotnet info",
+            "command": "dotnet --info"
         }
     ]
 }
@@ -127,3 +119,5 @@ Version | Changes Made
 0.1.1   | Fixed a bug that prevented using replacement strings more than once in arguments. Added a feature that allows setting `showInStatusBar` to `false` on a task to prevent it from being listed in the status bar tasks provided. Updated the instructions to mention that the extension does not suspend/stop/cancel processes of tasks when they are spawned. Added replacement variables for `${workspaceRootFolderName}` and `${fileBasenameNoExtension}`, and `${relativeFile}`.
 0.1.2   | Updated README file
 0.2.0   | *BREAKING CHANGE:* Reacted to new VS Code 1.9 feature for *tasks.json* where each task can have a `command` that overides the global `command`. With this version of Status Bar Tasks, the global `command` and `args` are prefixed to the task arguments unless the new task `command` property is found.
+0.2.1   | React to https://github.com/GuardRex/vscode-status-bar-tasks/issues/23 so that ${workspaceRoot} and ${workspaceRootFolderName} are populated when no project is open.
+0.3.0   | Use `label` to provide task names. `taskName` is still supported by the extension, but VS Code has depreciated `taskName` in favor of `label`.

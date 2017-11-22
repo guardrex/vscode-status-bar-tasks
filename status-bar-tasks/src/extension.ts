@@ -48,7 +48,7 @@ function LoadTasks(context: vscode.ExtensionContext, tasksOutputChannel: OutputC
             let statusBarTask = new StatusBarTask();
             if (val['showInStatusBar'] == undefined || val['showInStatusBar'] == true)
             {
-                statusBarTask.addStatusBartask(val['taskName'], (i + cmdCounter));
+                statusBarTask.addStatusBartask(val['label'] || val['taskName'], (i + cmdCounter));
                 let disposableCommand = vscode.commands.registerCommand('extension.run' + (i + cmdCounter), () => {
                     tasksOutputChannel.showOutput();
                     if (val['command'] != undefined)
@@ -70,15 +70,15 @@ function LoadTasks(context: vscode.ExtensionContext, tasksOutputChannel: OutputC
                     let currentTextEditors = vscode.window.activeTextEditor;
                     let sbt_workspaceRoot = '', sbt_workspaceRootFolderName = '', sbt_file = '', sbt_relativeFile = '', sbt_fileDirname = '', sbt_fileBasename = '', sbt_fileBasenameNoExtension = '', sbt_fileExtname;
 
+                    // path to the current application
+                    sbt_workspaceRoot = vscode.workspace.rootPath;
+
+                    // folder name holding the application
+                    sbt_workspaceRootFolderName = sbt_workspaceRoot.substring(sbt_workspaceRoot.lastIndexOf(delimiter)+1);
+
                     if (currentTextEditors != undefined) {
                         try
                         {
-                            // path to the current application
-                            sbt_workspaceRoot = vscode.workspace.rootPath;
-
-                            // folder name holding the application
-                            sbt_workspaceRootFolderName = sbt_workspaceRoot.substring(sbt_workspaceRoot.lastIndexOf(delimiter)+1);
-
                             // full filepath to open file
                             sbt_file = vscode.window.activeTextEditor.document.fileName;
 
@@ -218,9 +218,9 @@ class StatusBarTask {
 
     private _statusBarItem: vscode.StatusBarItem;
 
-    public addStatusBartask(taskName: string, taskNumber: number) : void {
+    public addStatusBartask(label: string, taskNumber: number) : void {
         this._statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-        this._statusBarItem.text = taskName;
+        this._statusBarItem.text = label;
         this._statusBarItem.command = "extension.run" + taskNumber;
         this._statusBarItem.show();
         statusBarItems.push(this._statusBarItem);
