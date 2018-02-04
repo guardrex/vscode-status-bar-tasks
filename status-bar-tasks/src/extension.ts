@@ -1,5 +1,6 @@
 'use strict';
 import * as vscode from 'vscode';
+import { Task } from './Task';
 const path = require('path');
 const fs = require('fs');
 const exec = require('child_process').exec;
@@ -17,15 +18,15 @@ export function activate(context: vscode.ExtensionContext) {
                     i.hide();
                 });
                 statusBarItems = [];
-                LoadTasks(context, tasksOutputChannel);
+                loadTasks(context, tasksOutputChannel);
             }
         });
         context.subscriptions.push(saveContext);
-        LoadTasks(context, tasksOutputChannel);
+        loadTasks(context, tasksOutputChannel);
     }
 }
 
-function LoadTasks(context: vscode.ExtensionContext, tasksOutputChannel: OutputChannel) {
+function loadTasks(context: vscode.ExtensionContext, tasksOutputChannel: OutputChannel) {
     /*
     tasksOutputChannel.attachOutput('Start loading of tasks:\n');
     vscode.commands.getCommands(true).then(results => {
@@ -42,31 +43,16 @@ function LoadTasks(context: vscode.ExtensionContext, tasksOutputChannel: OutputC
     const taskList = getTasksArray();
     var taskCounter = 0;
     var delimiter = process.platform == 'win32' ? '\\' : '/';
-    var cmd = "";
     if (taskList) {
-        taskList.forEach((val: Object, i: number) => { 
+        taskList.forEach((taskConfig: Object, i: number) => { 
             let statusBarTask = new StatusBarTask();
-            if (val['showInStatusBar'] == undefined || val['showInStatusBar'] == true)
+            let task = new Task(taskConfig, process.platform);
+            if (task.showInStatusBar())
             {
-                statusBarTask.addStatusBartask(val['label'] || val['taskName'], (i + cmdCounter));
+                statusBarTask.addStatusBartask(task.getLabel(), (i + cmdCounter));
                 let disposableCommand = vscode.commands.registerCommand('extension.run' + (i + cmdCounter), () => {
                     tasksOutputChannel.showOutput();
-                    if (val['command'] != undefined)
-                    {
-                        if (val['args'] != undefined)
-                        {
-                            cmd = val['command'] + ' ' + val['args'].join(' ');
-                        } else {
-                            cmd = val['command'];
-                        }
-                    } else {
-                        if (val['args'] != undefined)
-                        {
-                            cmd = globalCommandArguments + ' ' + val['args'].join(' ');
-                        } else {
-                            cmd = globalCommandArguments;
-                        }
-                    }
+                    let cmd = task.getCommand(globalCommandArguments);
                     let currentTextEditors = vscode.window.activeTextEditor;
                     let sbt_workspaceRoot = '', sbt_workspaceRootFolderName = '', sbt_file = '', sbt_relativeFile = '', sbt_fileDirname = '', sbt_fileBasename = '', sbt_fileBasenameNoExtension = '', sbt_fileExtname;
 
