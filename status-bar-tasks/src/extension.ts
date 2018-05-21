@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function LoadTasks(context: vscode.ExtensionContext, tasksOutputChannel: OutputChannel) {
-    /*
+        /*
     tasksOutputChannel.attachOutput('Start loading of tasks:\n');
     vscode.commands.getCommands(true).then(results => {
         results.forEach((val: string, i: number) => {
@@ -123,9 +123,16 @@ function LoadTasks(context: vscode.ExtensionContext, tasksOutputChannel: OutputC
                         .replace(/\$\{fileBasenameNoExtension\}/gi, sbt_fileBasenameNoExtension)
                         .replace(/\$\{workspaceRootFolderName\}/gi, sbt_workspaceRootFolderName);
 
-                    let ls = exec(cmd, {cwd: vscode.workspace.rootPath, maxBuffer: 2048000});
-                    ls.stdout.on('data', data => tasksOutputChannel.attachOutput(data));
-                    ls.stderr.on('data', data => tasksOutputChannel.attachOutput(data));
+                    // if `showInTerminal` option is specified and true, start a new terminal instead
+                    if (val['showInTerminal'] == true) {
+                        const terminal = vscode.window.createTerminal(val['label'] || val['taskName']);
+                        terminal.sendText(cmd);
+                        terminal.show();
+                    } else {
+                        let ls = exec(cmd, {cwd: vscode.workspace.rootPath, maxBuffer: 2048000});
+                        ls.stdout.on('data', data => tasksOutputChannel.attachOutput(data));
+                        ls.stderr.on('data', data => tasksOutputChannel.attachOutput(data));
+                    }
                 });
             }
             context.subscriptions.push(disposableCommand);
