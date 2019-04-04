@@ -1,3 +1,5 @@
+### vscode-status-bar-tasks is archived. I've become crazy busy at work ... so busy that there's no way that I can maintain this. I'll leave it archived to preserve access to the code if anyone wants to use it for their own extension.
+
 # vscode-status-bar-tasks
 This extension loads your VS Code tasks into executable status bar commands.
 
